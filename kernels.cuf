@@ -1,0 +1,18 @@
+module mymodule 
+  contains
+  attributes(global) &
+  subroutine saxpy_kernel(n, a, x, y)
+    real :: x(:), y(:), a
+    integer :: n,i
+    attributes(value) :: a,n
+    i = threadIdx%x+(blockIdx%x-1)*blockDim%x
+    if (i<=n) y(i) = y(i) + a*x(i)
+  end subroutine
+subroutine saxpy (n, a, x, y)
+  use cudafor
+  real, device :: x(:), y(:)
+  real :: a
+  integer :: n
+  call saxpy_kernel<<<4096,256>>>(n, a, x, y)
+end subroutine
+end module mymodule

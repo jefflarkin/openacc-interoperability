@@ -3,3 +3,4 @@ core
 .*.swp
 a.out
 *.mod
+cuda_profile_*.log

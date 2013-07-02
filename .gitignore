@@ -4,3 +4,5 @@ core
 a.out
 *.mod
 cuda_profile_*.log
+cuf_main
+thrust

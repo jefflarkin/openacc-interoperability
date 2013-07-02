@@ -1,4 +1,4 @@
-module mymodule 
+module saxpy_mod 
   contains
   attributes(global) &
   subroutine saxpy_kernel(n, a, x, y)
@@ -15,4 +15,4 @@ subroutine saxpy (n, a, x, y)
   integer :: n
   call saxpy_kernel<<<4096,256>>>(n, a, x, y)
 end subroutine
-end module mymodule
+end module saxpy_mod

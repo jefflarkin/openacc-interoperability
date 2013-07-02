@@ -8,24 +8,31 @@ FC=pgfortran
 FFLAGS=-fast -acc -ta=nvidia -Minfo=accel
 LDFLAGS=-Mcuda 
 
-EXES: cuf_main thrust
+EXES=cuda_main cuf_main cuf_openacc_main thrust
 
-cuf_main: cuf_main.f90
+all: $(EXES)
+
+cuda_main: saxpy_openacc_c.o cuda_main.o
+	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS)
+
+cuf_main: cuf_main.o
 	$(FC) -o $@ $(FFLAGS) $^ $(LDFLAGS)
 
-cuf_openacc_main: saxpy_openacc_f.f90 openacc_main.f90
+cuf_openacc_main: kernels.o openacc_main.o
 	$(FC) -o $@ $(FFLAGS) $^ $(LDFLAGS)
 
 thrust: saxpy_openacc_c.o thrust.o
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LDFLAGS) -lstdc++
-	
+
 .SUFFIXES:
-.SUFFIXES: .c .o .f90 .cu .cpp
+.SUFFIXES: .c .o .f90 .cu .cpp .cuf
 .c.o:
 	$(CC) $(CFLAGS) -c $<
 .cpp.o:
 	$(CXX) $(CXXFLAGS) -c $<
 .f90.o:
+	$(FC) $(FFLAGS) -c $<
+.cuf.o:
 	$(FC) $(FFLAGS) -c $<
 .cu.o:
 	$(CUDAC) $(CUDAFLAGS) -c $<

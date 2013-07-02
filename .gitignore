@@ -7,3 +7,4 @@ cuda_profile_*.log
 cuf_main
 thrust
 cuf_openacc_main
+cuda_main

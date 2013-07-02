@@ -13,6 +13,9 @@ EXES: cuf_main thrust
 cuf_main: cuf_main.f90
 	$(FC) -o $@ $(FFLAGS) $^ $(LDFLAGS)
 
+cuf_openacc_main: saxpy_openacc_f.f90 openacc_main.f90
+	$(FC) -o $@ $(FFLAGS) $^ $(LDFLAGS)
+
 thrust: saxpy_openacc_c.o thrust.o
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LDFLAGS) -lstdc++
 	

@@ -6,3 +6,4 @@ a.out
 cuda_profile_*.log
 cuf_main
 thrust
+cuf_openacc_main

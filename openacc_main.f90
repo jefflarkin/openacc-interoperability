@@ -1,5 +1,5 @@
 program main
-  use mymodule
+  use saxpy_mod
   integer, parameter :: N = 2**20
   real, dimension(N) :: X, Y
 

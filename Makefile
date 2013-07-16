@@ -8,9 +8,12 @@ FC=pgfortran
 FFLAGS=-fast -acc -ta=nvidia -Minfo=accel
 LDFLAGS=-Mcuda 
 
-EXES=cuda_main cuf_main cuf_openacc_main thrust
+EXES=cuda_main cuf_main cuf_openacc_main openacc_c_main thrust
 
 all: $(EXES)
+
+openacc_c_main: saxpy_cuda.o openacc_c_main.o
+	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS)
 
 cuda_main: saxpy_openacc_c.o cuda_main.o
 	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS)

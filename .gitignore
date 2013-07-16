@@ -8,3 +8,4 @@ cuf_main
 thrust
 cuf_openacc_main
 cuda_main
+openacc_cublas

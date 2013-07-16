@@ -6,11 +6,14 @@ CUDAC=nvcc
 CUDAFLAGS=
 FC=pgfortran
 FFLAGS=-fast -acc -ta=nvidia -Minfo=accel
-LDFLAGS=-Mcuda 
+LDFLAGS=-Mcuda
 
-EXES=cuda_main cuf_main cuf_openacc_main openacc_c_main thrust
+EXES=cuda_main cuf_main cuf_openacc_main openacc_c_main openacc_cublas
 
 all: $(EXES)
+
+openacc_cublas: openacc_cublas.o
+	$(FC) -o $@ $(CFLAGS) $^ $(LDFLAGS) -lcublas
 
 openacc_c_main: saxpy_cuda.o openacc_c_main.o
 	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS)

@@ -12,7 +12,7 @@ int main(int argc, char **argv)
   for(int i=0; i<N; i++)
   {
     x[i] = 1.0f;
-    y[i] = 1.0f;
+    y[i] = 0.0f;
   }
 
   thrust::device_vector<float> d_x = x;

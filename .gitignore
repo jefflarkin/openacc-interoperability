@@ -3,6 +3,9 @@ core
 .*.swp
 a.out
 *.mod
+*.lst
+*.ptx
+*.cub
 cuda_profile_*.log
 cuf_main
 thrust

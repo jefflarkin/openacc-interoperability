@@ -1,3 +1,20 @@
+EXES=cuda_main openacc_c_main openacc_c_cublas
+
+ifeq "$(PE_ENV)" "CRAY"
+# Cray Compiler
+EXES+=thrust
+CXX=CC
+CXXFLAGS=-hlist=a
+CC=cc
+CFLAGS=-hlist=a
+CUDAC=nvcc
+CUDAFLAGS=
+FC=ftn
+FFLAGS=-ra
+LDFLAGS=-lcudart
+else
+# PGI Compiler
+EXES+=cuf_main cuf_openacc_main openacc_cublas  
 CXX=pgCC
 CXXFLAGS=-fast -acc -ta=nvidia -Minfo=accel
 CC=pgcc
@@ -7,8 +24,7 @@ CUDAFLAGS=
 FC=pgfortran
 FFLAGS=-fast -acc -ta=nvidia -Minfo=accel
 LDFLAGS=-Mcuda
-
-EXES=cuda_main cuf_main cuf_openacc_main openacc_c_main openacc_cublas openacc_c_cublas
+endif
 
 all: $(EXES)
 
@@ -47,4 +63,4 @@ thrust: saxpy_openacc_c.o thrust.o
 	$(CUDAC) $(CUDAFLAGS) -c $<
 .PHONY: clean
 clean:
-	rm -rf *.o $(EXES)
+	rm -rf *.o *.ptx *.cub *.lst *.mod $(EXES)

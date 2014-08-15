@@ -14,3 +14,4 @@ cuda_main
 openacc_cublas
 openacc_c_cublas
 openacc_c_main
+cuda_map

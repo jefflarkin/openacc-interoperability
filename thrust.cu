@@ -8,15 +8,13 @@ extern "C" void saxpy(int,float,float*,float*);
 int main(int argc, char **argv)
 {
   int N = 1<<20;
-  thrust::host_vector<float> x(N), y(N);
-  for(int i=0; i<N; i++)
-  {
-    x[i] = 1.0f;
-    y[i] = 0.0f;
-  }
+  thrust::host_vector<float> y(N);
 
-  thrust::device_vector<float> d_x = x;
-  thrust::device_vector<float> d_y = y;
+  thrust::device_vector<float> d_x(N);
+  thrust::device_vector<float> d_y(N);
+
+  thrust::fill(d_x.begin(),d_x.end(), 1.0f);
+  thrust::fill(d_y.begin(),d_y.end(), 0.0f);
 
   saxpy(N,2.0,d_x.data().get(),d_y.data().get());
 

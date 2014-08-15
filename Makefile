@@ -1,4 +1,4 @@
-EXES=cuda_main openacc_c_main openacc_c_cublas thrust
+EXES=cuda_main openacc_c_main openacc_c_cublas thrust cuda_map
 
 ifeq "$(PE_ENV)" "CRAY"
 # Cray Compiler
@@ -47,6 +47,9 @@ cuf_openacc_main: kernels.o openacc_main.o
 
 thrust: saxpy_openacc_c.o thrust.o
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LDFLAGS) -lstdc++
+
+cuda_map: saxpy_openacc_c_mapped.o cuda_map.o
+	$(CXX) -o $@ $(CXXFLAGS) $^ $(LDFLAGS)
 
 .SUFFIXES:
 .SUFFIXES: .c .o .f90 .cu .cpp .cuf

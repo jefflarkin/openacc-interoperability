@@ -17,10 +17,8 @@ int main(int argc, char **argv)
 
   thrust::device_vector<float> d_x = x;
   thrust::device_vector<float> d_y = y;
-  thrust::device_ptr<float> p_x = &d_x[0];
-  thrust::device_ptr<float> p_y = &d_y[0];
 
-  saxpy(N,2.0,p_x.get(),p_y.get());
+  saxpy(N,2.0,d_x.data().get(),d_y.data().get());
 
   y = d_y;
   printf("%f\n",y[0]);

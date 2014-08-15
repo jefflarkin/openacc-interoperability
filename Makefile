@@ -1,8 +1,7 @@
-EXES=cuda_main openacc_c_main openacc_c_cublas
+EXES=cuda_main openacc_c_main openacc_c_cublas thrust
 
 ifeq "$(PE_ENV)" "CRAY"
 # Cray Compiler
-EXES+=thrust
 CXX=CC
 CXXFLAGS=-hlist=a
 CC=cc
@@ -11,7 +10,7 @@ CUDAC=nvcc
 CUDAFLAGS=
 FC=ftn
 FFLAGS=-ra
-LDFLAGS=-lcudart
+LDFLAGS=-L$(CUDA_HOME)/lib64 -lcudart
 else
 # PGI Compiler
 EXES+=cuf_main cuf_openacc_main openacc_cublas  
@@ -23,7 +22,7 @@ CUDAC=nvcc
 CUDAFLAGS=
 FC=pgfortran
 FFLAGS=-fast -acc -ta=nvidia -Minfo=accel
-LDFLAGS=-Mcuda
+LDFLAGS=-L$(CUDA_HOME)/lib64 -lcudart -Mcuda
 endif
 
 all: $(EXES)

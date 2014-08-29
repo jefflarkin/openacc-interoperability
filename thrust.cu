@@ -16,7 +16,7 @@ int main(int argc, char **argv)
   thrust::fill(d_x.begin(),d_x.end(), 1.0f);
   thrust::fill(d_y.begin(),d_y.end(), 0.0f);
 
-  saxpy(N,2.0,d_x.data().get(),d_y.data().get());
+  saxpy(N,2.0,thrust::raw_pointer_cast(d_x.data()),thrust::raw_pointer_cast(d_y.data()));
 
   y = d_y;
   printf("%f\n",y[0]);

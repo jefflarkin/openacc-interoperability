@@ -20,3 +20,4 @@ Examples
 * cuf\_main - Calling OpenACC from CUDA Fortran
 * cuf\_openacc\_main - Calling CUDA Fortran from OpenACC
 * openacc\_cublas - Calling CUBLAS from OpenACC in CUDA Fortran
+* acc\_malloc - Same as cuda\_main, but using the OpenACC API

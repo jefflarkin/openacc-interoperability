@@ -1,4 +1,4 @@
-EXES=cuda_main openacc_c_main openacc_c_cublas thrust cuda_map
+EXES=cuda_main openacc_c_main openacc_c_cublas thrust cuda_map acc_malloc
 
 ifeq "$(PE_ENV)" "CRAY"
 # Cray Compiler
@@ -14,7 +14,7 @@ LDFLAGS=-L$(CUDA_HOME)/lib64 -lcudart
 else
 # PGI Compiler
 EXES+=cuf_main cuf_openacc_main openacc_cublas  
-CXX=pgCC
+CXX=pgc++
 CXXFLAGS=-fast -acc -ta=nvidia -Minfo=accel
 CC=pgcc
 CFLAGS=-fast -acc -ta=nvidia -Minfo=accel
@@ -22,13 +22,13 @@ CUDAC=nvcc
 CUDAFLAGS=
 FC=pgfortran
 FFLAGS=-fast -acc -ta=nvidia -Minfo=accel
-LDFLAGS=-L$(CUDA_HOME)/lib64 -lcudart -Mcuda
+LDFLAGS=-L$(CUDA_HOME)/lib64 -lcudart
 endif
 
 all: $(EXES)
 
 openacc_cublas: openacc_cublas.o
-	$(FC) -o $@ $(CFLAGS) $^ $(LDFLAGS) -lcublas
+	$(FC) -o $@ $(CFLAGS) $^ $(LDFLAGS) -lcublas -Mcuda
 
 openacc_c_cublas: openacc_c_cublas.o
 	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS) -lcublas
@@ -37,19 +37,22 @@ openacc_c_main: saxpy_cuda.o openacc_c_main.o
 	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS)
 
 cuda_main: saxpy_openacc_c.o cuda_main.o
-	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS)
+	$(CXX) -o $@ $(CFLAGS) $^ $(LDFLAGS)
 
 cuf_main: cuf_main.o
-	$(FC) -o $@ $(FFLAGS) $^ $(LDFLAGS)
+	$(FC) -o $@ $(FFLAGS) $^ $(LDFLAGS) -Mcuda
 
 cuf_openacc_main: kernels.o openacc_main.o
-	$(FC) -o $@ $(FFLAGS) $^ $(LDFLAGS)
+	$(FC) -o $@ $(FFLAGS) $^ $(LDFLAGS) -Mcuda
 
 thrust: saxpy_openacc_c.o thrust.o
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LDFLAGS) -lstdc++
 
 cuda_map: saxpy_openacc_c_mapped.o cuda_map.o
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LDFLAGS)
+
+acc_malloc: saxpy_openacc_c.o acc_malloc.o
+	$(CC) -o $@ $(CXXFLAGS) $^ $(LDFLAGS)
 
 .SUFFIXES:
 .SUFFIXES: .c .o .f90 .cu .cpp .cuf

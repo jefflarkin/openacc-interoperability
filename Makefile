@@ -1,4 +1,4 @@
-EXES=cuda_main openacc_c_main openacc_c_cublas thrust cuda_map acc_malloc
+EXES=cuda_main openacc_c_main openacc_c_cublas thrust cuda_map acc_malloc openacc_streams openacc_cuda_device
 
 ifeq "$(PE_ENV)" "CRAY"
 # Cray Compiler
@@ -15,14 +15,14 @@ else
 # PGI Compiler
 EXES+=cuf_main cuf_openacc_main openacc_cublas  
 CXX=pgc++
-CXXFLAGS=-fast -acc -ta=nvidia -Minfo=accel
+CXXFLAGS=-fast -acc -ta=nvidia:rdc -Minfo=accel
 CC=pgcc
-CFLAGS=-fast -acc -ta=nvidia -Minfo=accel
+CFLAGS=-fast -acc -ta=nvidia:rdc -Minfo=accel
 CUDAC=nvcc
 CUDAFLAGS=
 FC=pgfortran
 FFLAGS=-fast -acc -ta=nvidia -Minfo=accel
-LDFLAGS=-L$(CUDA_HOME)/lib64 -lcudart
+LDFLAGS=-Mcuda #-L$(CUDA_HOME)/lib64 -lcudart
 endif
 
 all: $(EXES)
@@ -52,6 +52,15 @@ cuda_map: saxpy_openacc_c_mapped.o cuda_map.o
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LDFLAGS)
 
 acc_malloc: saxpy_openacc_c.o acc_malloc.o
+	$(CC) -o $@ $(CXXFLAGS) $^ $(LDFLAGS)
+
+openacc_cuda_device: saxpy_cuda_device.o openacc_cuda_device.o
+	$(CXX) -o $@ $(CXXFLAGS) $^ $(LDFLAGS)
+
+saxpy_cuda_device.o: saxpy_cuda_device.cu
+	$(CUDAC) $(CUDAFLAGS) -rdc true -c $<
+	
+openacc_streams: saxpy_cuda_async.o openacc_streams.o
 	$(CC) -o $@ $(CXXFLAGS) $^ $(LDFLAGS)
 
 .SUFFIXES:

@@ -15,3 +15,5 @@ openacc_cublas
 openacc_c_cublas
 openacc_c_main
 cuda_map
+openacc_streams
+openacc_cuda_device

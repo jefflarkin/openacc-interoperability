@@ -27,5 +27,5 @@ Examples
 * openacc\_cublas - Calling CUBLAS from OpenACC in CUDA Fortran
 * acc\_malloc - Same as cuda\_main, but using the OpenACC API
 * openacc\_streams  - Mixes OpenACC async queues and CUDA streams
-* openacc\_cuda\_device - Calls a CUDA __device__ kernel within an OpenACC
+* openacc\_cuda\_device - Calls a CUDA \_\_device\_\_ kernel within an OpenACC
   region

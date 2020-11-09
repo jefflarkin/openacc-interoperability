@@ -1,4 +1,4 @@
-EXES=cuda_main openacc_c_main openacc_c_cublas thrust cuda_map acc_malloc openacc_streams openacc_cuda_device
+EXES=cuda_main openacc_c_main openacc_c_cublas openacc_c_cublas_v2 thrust cuda_map acc_malloc openacc_streams openacc_cuda_device
 
 ifeq "$(PE_ENV)" "CRAY"
 # Cray Compiler
@@ -14,13 +14,13 @@ LDFLAGS=-L$(CUDA_HOME)/lib64 -lcudart
 else
 # PGI Compiler
 EXES+=cuf_main cuf_openacc_main openacc_cublas  
-CXX=pgc++
+CXX=nvc++
 CXXFLAGS=-fast -acc -ta=nvidia:rdc -Minfo=accel
-CC=pgcc
+CC=nvc
 CFLAGS=-fast -acc -ta=nvidia:rdc -Minfo=accel
 CUDAC=nvcc
 CUDAFLAGS=
-FC=pgfortran
+FC=nvfortran
 FFLAGS=-fast -acc -ta=nvidia -Minfo=accel
 LDFLAGS=-Mcuda #-L$(CUDA_HOME)/lib64 -lcudart
 endif
@@ -28,10 +28,13 @@ endif
 all: $(EXES)
 
 openacc_cublas: openacc_cublas.o
-	$(FC) -o $@ $(CFLAGS) $^ $(LDFLAGS) -lcublas -Mcuda
+	$(FC) -o $@ $(CFLAGS) $^ $(LDFLAGS) -Mcudalib=cublas
 
 openacc_c_cublas: openacc_c_cublas.o
-	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS) -lcublas
+	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS) -Mcudalib=cublas
+
+openacc_c_cublas_v2: openacc_c_cublas_v2.o
+	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS) -Mcudalib=cublas
 
 openacc_c_main: saxpy_cuda.o openacc_c_main.o
 	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS)

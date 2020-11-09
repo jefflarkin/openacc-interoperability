@@ -4,7 +4,7 @@ Author: Jeff Larkin <jlarkin@nvidia.com>
 
 This repository demonstrates interoperability between OpenACC and various other
 GPU programming models. An OpenACC-enabled compiler is required. The default
-makefile has been written for PGI and tested with PGI 14.7, although most if
+makefile has been written for PGI and tested with PGI 20.9, although most if
 not all examples will work with earlier versions.
 
 If building with the Cray Compiler Environment the makefile will detect this

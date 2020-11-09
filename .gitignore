@@ -17,3 +17,5 @@ openacc_c_main
 cuda_map
 openacc_streams
 openacc_cuda_device
+acc_malloc
+openacc_c_cublas_v2

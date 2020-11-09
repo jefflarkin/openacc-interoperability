@@ -7,7 +7,7 @@ CXXFLAGS=-hlist=a
 CC=cc
 CFLAGS=-hlist=a
 CUDAC=nvcc
-CUDAFLAGS=
+CUDAFLAGS=-gencode arch=compute_60,code=sm_60 -gencode arch=compute_70,code=sm_70 -gencode arch=compute_75,code=sm_75 -gencode arch=compute_80,code=sm_80
 FC=ftn
 FFLAGS=-ra
 LDFLAGS=-L$(CUDA_HOME)/lib64 -lcudart
@@ -15,14 +15,16 @@ else
 # PGI Compiler
 EXES+=cuf_main cuf_openacc_main openacc_cublas  
 CXX=nvc++
-CXXFLAGS=-fast -acc -ta=nvidia:rdc -Minfo=accel
+CXXFLAGS=-fast -acc -Minfo=accel -gpu=cc60,cc70,cc75,cc80
 CC=nvc
-CFLAGS=-fast -acc -ta=nvidia:rdc -Minfo=accel
+CFLAGS=-fast -acc -Minfo=accel -gpu=cc60,cc70,cc75,cc80
 CUDAC=nvcc
-CUDAFLAGS=
+# Hard-coded architectures to avoid build issue when arches are added or
+# removed from compilers
+CUDAFLAGS=-gencode arch=compute_60,code=sm_60 -gencode arch=compute_70,code=sm_70 -gencode arch=compute_75,code=sm_75 -gencode arch=compute_80,code=sm_80
 FC=nvfortran
-FFLAGS=-fast -acc -ta=nvidia -Minfo=accel
-LDFLAGS=-Mcuda #-L$(CUDA_HOME)/lib64 -lcudart
+FFLAGS=-fast -acc -Minfo=accel -gpu=cc60,cc70,cc75,cc80
+LDFLAGS=-Mcuda 
 endif
 
 all: $(EXES)
@@ -37,7 +39,7 @@ openacc_c_cublas_v2: openacc_c_cublas_v2.o
 	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS) -Mcudalib=cublas
 
 openacc_c_main: saxpy_cuda.o openacc_c_main.o
-	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS)
+	$(CXX) -o $@ $(CFLAGS) $^ $(LDFLAGS)
 
 cuda_main: saxpy_openacc_c.o cuda_main.o
 	$(CXX) -o $@ $(CFLAGS) $^ $(LDFLAGS)
@@ -64,7 +66,7 @@ saxpy_cuda_device.o: saxpy_cuda_device.cu
 	$(CUDAC) $(CUDAFLAGS) -rdc true -c $<
 	
 openacc_streams: saxpy_cuda_async.o openacc_streams.o
-	$(CC) -o $@ $(CXXFLAGS) $^ $(LDFLAGS)
+	$(CXX) -o $@ $(CXXFLAGS) $^ $(LDFLAGS)
 
 .SUFFIXES:
 .SUFFIXES: .c .o .f90 .cu .cpp .cuf

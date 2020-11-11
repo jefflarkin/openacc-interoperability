@@ -19,3 +19,4 @@ openacc_streams
 openacc_cuda_device
 acc_malloc
 openacc_c_cublas_v2
+.vscode
